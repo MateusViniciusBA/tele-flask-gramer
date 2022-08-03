@@ -1,0 +1,204 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Products {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+
+<style>
+    
+</style>
+
+
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <!-- [ breadcrumb ] start -->
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5 class="m-b-10">Produtos</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ breadcrumb ] end -->
+            <div class="main-body">
+                <div class="page-wrapper">
+                    <!-- [ Main Content ] start -->
+                    <div class="row col-xl-12">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Adicionar Produtos</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form action="" method="post">
+                                                <div class="form-group">
+                                                    <label for="label_prod_name">Nome do Produto</label>
+                                                    <input type="text" class="form-control" id="prod_name" placeholder="Insira o nome do produto igual o da plataforma marketplace !">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="label_group">Grupos</label>
+                                                    <select class="form-control" id="selected_groups" multiple="multiple">
+                                                        <!-- <option value="Grupo Teste Blaze">Grupo Teste Blaze</option>
+                                                        <option value="Grupo Teste Blaze 1">Grupo Teste Blaze 1</option>
+                                                        <option value="Grupo Teste Blaze 2">Grupo Teste Blaze 2</option>
+                                                        <option value="Grupo Teste Blaze 3">Grupo Teste Blaze 3</option>
+                                                        <option value="Grupo Teste Blaze 4">Grupo Teste Blaze 4</option> -->
+                                                            {% for group in telegram_groups %}
+                                                                <option value="{{ group.name }}">{{ group.name }}</option>
+                                                            {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label for="label_platform">Plataforma</label>
+                                                        <select class="form-control" id="selected_platform" name="selected_platform">
+                                                            <option value="hotmart" id="hotmart">Hotmart</option>
+                                                            <option value="kiwify" id="kiwify">Kiwify</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label for="label_platform">Duração</label>
+                                                        <select class="form-control" id="selected_duration" name="selected_duration">
+                                                            <option value="test" id="test">Teste</option>
+                                                            <option value="7days" id="7days">7 Dias</option>
+                                                            <option value="1month" id="1month">1 Mês</option>
+                                                            <option value="3month" id="3month">3 Meses</option>
+                                                            <option value="6month" id="6month">6 Meses</option>
+                                                            <option value="1year" id="1year">1 Ano</option>
+                                                            <option value="vitality" id="vitality">Vitalício</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="label_prod_plat_id">ID do produto</label>
+                                                    <input type="text" class="form-control" id="prod_plat_id" aria-describedby="emailHelp" placeholder="Digite o id do produto na plataforma !">
+                                                </div>
+                                                <button type="button" class="btn btn-primary" onclick="add_products()" id="add_btn">Adicionar <i class="feather icon-plus"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-xl-12">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Lista de Produtos</h5>
+                                    <!-- <span class="d-block m-t-5">use class <code>table</code> inside table element</span> -->
+                                </div>
+                                <div class="card-block table-border-style">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Nome</th>
+                                                    <th>Grupos</th>
+                                                    <th>Plataforma</th>
+                                                    <th>ID Plataforma</th>
+                                                    <th>Data Inplatação</th>
+                                                    <th>Duração</th>
+                                                    <th>Remove</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for product in products %}
+                                                    <tr>
+                                                        <th scope="row">{{product.id}}</th>
+                                                        <td>{{product.name}}</td>
+                                                        <td>{{product.groups}}</td>
+                                                        <td>{{product.platform_name}}</td>
+                                                        <td>{{product.platform_id}}</td>
+                                                        <td>{{product.add_at|strftime}}</td>
+                                                        <td>{{product.duration|durationFormat}}</td>
+                                                        <td><button type="button" onclick="remove_product({{product.id}})" class="btn btn-danger">X</button></td>
+                                                    </tr>
+                                                {% endfor %}    
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <br>
+                                    <ul class="pagination col-xl-12" style="justify-content: center;">
+                                        {% if prev_url %}
+                                            <li class="page-item"><a class="page-link" href="{{ prev_url }}">Voltar</a></li>
+                                        {% else %}
+                                            <li class="page-item disabled"><a class="page-link" href="{{ prev_url }}">Voltar</a></li>
+                                        {% endif %}
+                                        {% if next_url %}
+                                            <li class="page-item"><a class="page-link" href="{{ next_url }}">Próximo</a></li>
+                                        {% else %}
+                                            <li class="page-item disabled"><a class="page-link"  href="{{ next_url }}">Próximo</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Main Content ] end -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+    function add_products(){
+        var group_options_selected = document.getElementById('selected_groups').selectedOptions;
+        var groups_selected = Array.from(group_options_selected).map(({ value }) => value);
+
+        var data_post = {
+            name: $('#prod_name').val(),
+            groups: groups_selected,
+            platform: $('#selected_platform :selected').text(),
+            platform_id: $('#prod_plat_id').val(),
+            duration: $('#selected_duration :selected').val()
+        }
+
+        $.ajax({
+            url: 'product/add',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data_post),
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                alert(data.responseJSON.msg);
+            }
+        });
+    }
+
+    function remove_product(id){
+        $.ajax({
+            url: 'product/remove/' + id,
+            type: 'GET',
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                alert(data.responseJSON.msg);
+            }
+        });
+    }
+</script>
+
+{% endblock javascripts %}

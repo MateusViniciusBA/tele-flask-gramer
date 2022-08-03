@@ -1,0 +1,142 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Page Blank {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <!-- [ breadcrumb ] start -->
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5 class="m-b-10">Telegram</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ breadcrumb ] end -->
+            <div class="main-body">
+                <div class="page-wrapper">
+                    <!-- [ Main Content ] start -->
+                    <div class="row col-xl-12">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Adicionar Grupo</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Nome do Grupo</label>
+                                                    <input type="text" class="form-control" id="group_link" placeholder="@telegram_group_name">
+                                                </div>
+                                                <button type="button" class="btn btn-primary" onclick="add_group()">Adicionar <i class="feather icon-plus"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-xl-12">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Grupos</h5>
+                                    <!-- <span class="d-block m-t-5">use class <code>table</code> inside table element</span> -->
+                                </div>
+                                <div class="card-block table-border-style">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Titulo</th>
+                                                    <th>Link</th>
+                                                    <th>Data Add.</th>
+                                                    <th>Id</th>
+                                                    <th>Remove</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for group in telegram_groups %}
+                                                    <tr>
+                                                        <th scope="row">{{group.id}}</th>
+                                                        <td>{{group.name}}</td>
+                                                        <td>{{group.link}}</td>
+                                                        <td>{{group.add_att|strftime}}</td>
+                                                        <td>{{group.chat_id}}</td>
+                                                        <td><button class="btn btn-danger" onclick="remove_group({{group.id}})">X</button></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <br>
+                                    <ul class="pagination col-xl-12" style="justify-content: center;">
+                                        {% if prev_url %}
+                                            <li class="page-item"><a class="page-link" href="{{ prev_url }}">Voltar</a></li>
+                                        {% else %}
+                                            <li class="page-item disabled"><a class="page-link" href="{{ prev_url }}">Voltar</a></li>
+                                        {% endif %}
+                                        {% if next_url %}
+                                            <li class="page-item"><a class="page-link" href="{{ next_url }}">Próximo</a></li>
+                                        {% else %}
+                                            <li class="page-item disabled"><a class="page-link"  href="{{ next_url }}">Próximo</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Main Content ] end -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    function add_group(){
+        var group_name = $('#group_link').val();
+        $.ajax({
+            url: 'telegram/add',
+            type: 'POST',
+            data: {
+                group_name: group_name
+            },
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                alert(data.responseJSON.msg);
+            }
+        });
+    }
+
+    function remove_group(id){
+        $.ajax({
+            url: 'telegram/remove/' + id,
+            type: 'GET',
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                alert(data.responseJSON.msg);
+            }
+        });
+    }
+</script>
+{% endblock javascripts %}

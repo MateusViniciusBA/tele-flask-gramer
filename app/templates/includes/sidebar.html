@@ -1,0 +1,41 @@
+
+    <nav class="pcoded-navbar">
+        <div class="navbar-wrapper">
+            <div class="navbar-brand header-logo">
+                <a target="_blank" 
+                   href="/" class="b-brand">
+                    <div class="b-bg">
+                        <i class="feather icon-trending-up"></i>
+                    </div>
+                    <span class="b-title">Gerenciador Telegram</span>
+                </a>
+                <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
+            </div>
+            <div class="navbar-content scroll-div">
+                <ul class="nav pcoded-inner-navbar">
+                    <li data-username="home page manager" 
+                        class="nav-item {% if 'index' in segment %} active {% endif %}">
+                        <a href="/cpanel" class="nav-link "><span class="pcoded-micon"><i class="feather icon-home"></i></span><span class="pcoded-mtext">Inicio</span></a>
+                    </li>
+                    <li data-username="products page" 
+                        class="nav-item {% if 'product' in segment %} active {% endif %}">
+                        <a href="/cpanel/product" class="nav-link "><span class="pcoded-micon"><i class="feather icon-package"></i></span><span class="pcoded-mtext">Produtos</span></a>
+                    </li>
+                    <li data-username="purchases pages" 
+                        class="nav-item {% if 'purchase' in segment %} active {% endif %}">
+                        <a href="/cpanel/purchase" class="nav-link "><span class="pcoded-micon"><i class="feather icon-shopping-cart"></i></span><span class="pcoded-mtext">Compras</span></a>
+                    </li>
+                    <li data-username="telegram goup page" 
+                        class="nav-item {% if 'telegram' in segment %} active {% endif %}">
+                        <a href="/cpanel/telegram" class="nav-link "><span class="pcoded-micon"><i class="feather icon-navigation"></i></span><span class="pcoded-mtext">Telegram</span></a>
+                    </li>
+                    
+                    <li data-username="Disabled Menu" class="nav-item">
+                        <a href="{{ url_for('cpanel.logout') }}" class="nav-link">
+                            <span class="pcoded-micon"><i class="feather icon-power"></i></span><span class="pcoded-mtext">Sair</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>

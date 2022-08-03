@@ -1,0 +1,164 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Page Blank {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <!-- [ breadcrumb ] start -->
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5 class="m-b-10">Compras</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ breadcrumb ] end -->
+            <div class="main-body">
+                <div class="page-wrapper">
+                    <!-- [ Main Content ] start -->
+                    <div class="row col-xl-12">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Adicionar Compra</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1">Email Usuário</label>
+                                                    <input type="email" class="form-control" id="buyer_mail" placeholder="Email para autenticação">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="label_product">Produto</label>
+                                                    <select class="form-control" id="product">
+                                                        {% for product in products %}
+                                                            <option value="{{ product.name }}">{{ product.name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <button type="button" class="btn btn-primary" onclick="add_purchase()">Adicionar <i class="feather icon-plus"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-xl-12">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Lista de Compras</h5>
+                                    <!-- <span class="d-block m-t-5">use class <code>table</code> inside table element</span> -->
+                                </div>
+                                <div class="card-block table-border-style">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Produto</th>
+                                                    <th>Email Comprador</th>
+                                                    <th>Data Compra</th>
+                                                    <th>Data Vencimento</th>
+                                                    <th>Token Transação</th>
+                                                    <th>Status</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for purchase in purchases %}
+                                                    <tr style="justify-content: center;">
+                                                        <th scope="row">{{purchase.id}}</th>
+                                                        <td>{{purchase.product}}</td>
+                                                        <td>{{purchase.buyer_email}}</td>
+                                                        <td>{{purchase.buy_date|strftime}}</td>
+                                                        <td>{{purchase.end_date|strftime}}</td>
+                                                        <td>{{purchase.order_token}}</td>
+                                                        <td>{{purchase.order_status|statusFormat}}</td>
+                                                        <td><button type="button" onclick="remove_purchase({{purchase.id}})" class="btn btn-danger">X</button></td>
+                                                    </tr>
+                                                {% endfor %}    
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <br>
+                                    <ul class="pagination col-xl-12" style="justify-content: center;">
+                                        {% if prev_url %}
+                                            <li class="page-item"><a class="page-link" href="{{ prev_url }}">Voltar</a></li>
+                                        {% else %}
+                                            <li class="page-item disabled"><a class="page-link" href="{{ prev_url }}">Voltar</a></li>
+                                        {% endif %}
+                                        {% if next_url %}
+                                            <li class="page-item"><a class="page-link" href="{{ next_url }}">Próximo</a></li>
+                                        {% else %}
+                                            <li class="page-item disabled"><a class="page-link"  href="{{ next_url }}">Próximo</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Main Content ] end -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script type="text/javascript">
+    function add_purchase(){
+
+        var buyer_mail = $("#buyer_mail").val();
+        var product = $("#product :selected").val();
+        var token = Math.random().toString(36);
+
+        var data_post = {
+            'buyer_mail': buyer_mail,
+            'product': product,
+            'token': token
+        }
+
+        $.ajax({
+            url: 'purchase/add',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(data_post),
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                alert(data.responseJSON.msg);
+            }
+        });
+    }
+
+    function remove_purchase(id){
+        $.ajax({
+            url: 'purchase/remove/' + id,
+            type: 'GET',
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                alert(data.responseJSON.msg);
+            }
+        });
+    }
+    
+</script>
+{% endblock javascripts %}
